@@ -5,14 +5,22 @@ game.createUserAction({ name: 'message', parameters: ["The user's  message to yo
 
 // game.message("Don't bite me");
 
-game.botAction("reply", "Replies to the user by sending them a message. You should always do this.", {message: "You, the mosquito's response to the human."}, data => {
-  document.getElementById('conversation').innerHTML += '<p>' + data.message + '</p>';
-  document.getElementById("distanceFromHuman").innerHTML = data.currentVariables.distanceFromHuman.value;
+game.botAction("reply", "Replies to the user by sending them a message. You should always reply to the user.", {message: "You, the mosquito's response to the human."}, data => {
+  document.getElementById('conversation').innerHTML += '<p><b>' + data.message + '</b></p>';
+
+  updateDist(data)
 })
 
-game.botAction("innerDemons", "The inner demons of the human tries to convince them to let you bite.", {message: "What the inner demons say to the human."}, data => {
+game.botAction("innerDemonSpeak", "The inner demons of the human tries to convince them to let you bite. This happens now and then to plant doubt into the human.", {message: "What the inner demons say to the human."}, data => {
   document.getElementById('conversation').innerHTML += '<p><i>Inner Demons:</i> ' + data.message + '</p>';
-  document.getElementById("distanceFromHuman").innerHTML = data.currentVariables.distanceFromHuman.value;
+  
+  updateDist(data)
+})
+
+game.botAction("motherSpeak", "The mother of the human speaks to the human, reminding them to not get bitten.", {message: "What the mother says to the human."}, data => {
+  document.getElementById('conversation').innerHTML += '<p><i>Your Mother:</i> ' + data.message + '</p>';
+
+  updateDist(data)
 })
 
 document.getElementById('input').addEventListener('keyup', function(e) {
@@ -26,3 +34,15 @@ document.getElementById('input').addEventListener('keyup', function(e) {
   }
 })
 
+function updateDist(data) {
+  const dist = data.currentVariables.distanceFromHuman.value;
+  document.getElementById("distanceFromHuman").innerHTML = dist;
+
+  let percentage = 100 - dist;
+  if (dist < 0) percentage = 100;
+  if (dist > 100) percentage = 0;
+
+  const color = `hsl(0, 100%, ${100 - percentage/2}%)`;
+
+  document.body.style.backgroundColor = color;
+}
